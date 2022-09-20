@@ -1,14 +1,16 @@
 {
-  "name": "node-red-contrib-ftp-sftp",
-  "version": "1.8.8",
+  "name": "@yousolution/node-red-contrib-you-ftp-sftp",
+  "version": "1.8.9",
   "description": "A node-red node that support FTP and SFTP file transfer using $() environment variables to control the ftp connection details",
   "main": "sftp.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "update": "npm pack && mv yousolution-node-red-contrib-you-ftp-sftp-$npm_package_version.tgz ./data && cd data && npm i yousolution-node-red-contrib-you-ftp-sftp-$npm_package_version.tgz && docker-compose restart",
+    "test": "mocha 'test/**/*.spec.js'",
+    "coverage": "nyc npm run test"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HardingPoint/node-red-contrib-ftp-sftp.git"
+    "url": "git+https://github.com/yousolution-cloud/node-red-contrib-you-ftp-sftp.git"
   },
   "keywords": [
     "node-red",
@@ -18,19 +20,30 @@
   ],
   "node-red": {
     "nodes": {
-      "ftp": "ftp.js",
-      "sftp": "sftp.js"
+      "ftp": "nodes/ftp.js",
+      "sftp": "nodes/sftp.js"
     }
   },
-  "author": "Joe Gaska [Harding Point]",
+  "author": "Andrea Trentin [YouSolution]",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/HardingPoint/node-red-contrib-ftp-sftp/issues"
+    "url": "https://github.com/yousolution-cloud/node-red-contrib-you-ftp-sftp.git/issues"
   },
-  "homepage": "https://github.com/HardingPoint/node-red-contrib-ftp-sftp#readme",
+  "homepage": "https://github.com/yousolution-cloud/node-red-contrib-you-ftp-sftp.git#readme",
   "dependencies": {
     "ftp": "^0.3.10",
     "jsftp": "git+https://github.com/sergi/jsftp.git",
     "ssh2-sftp-client": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.3.0",
+    "@types/node-red-node-test-helper": "^0.2.2",
+    "@types/sinon": "^10.0.6",
+    "chai": "^4.3.4",
+    "mocha": "^9.1.3",
+    "node-red": "^2.1.4",
+    "node-red-node-test-helper": "^0.2.7",
+    "nyc": "^15.1.0",
+    "sinon": "^12.0.1"
   }
 }

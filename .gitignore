@@ -2,3 +2,5 @@ node_modules
 test
 .DS_Store
 npm-debug.log
+data/*
+!data/.gitkeep
