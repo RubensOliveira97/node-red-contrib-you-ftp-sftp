@@ -1,7 +1,9 @@
 # @yousolution/node-red-contrib-you-ftp-sftp
 
 A Node-RED node to FTP and SFTP Client (_fork node-red-contrib-ftp-sftp_).
-**Aggiunge la gestione degli errori FTP/SFTP**
+
+**Adds FTP/SFTP error handling**
+
 Please log issues in the repo for assistance.
 (https://github.com/yousolution-cloud/node-red-contrib-you-ftp-sftp.git)
 
