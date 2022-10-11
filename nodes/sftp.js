@@ -33,18 +33,18 @@ const fs = require('fs');
 module.exports = function (RED) {
   'use strict';
 
-  var sftp = require('ssh2').Client;
-  var fs = require('fs');
+  const sftp = require('ssh2').Client;
+  const fs = require('fs');
 
   function SFtpNode(n) {
     RED.nodes.createNode(this, n);
-    var node = this;
+    // var node = this;
 
     console.log('SFTP - Config - hmac: ' + n.hmac);
     console.log('SFTP - Config - cipher: ' + n.cipher);
 
-    var keyFile = null;
-    var keyData = null;
+    let keyFile = null;
+    let keyData = null;
     if (process.env.SFTP_SSH_KEY_FILE) {
       keyFile = process.env.SFTP_SSH_KEY_FILE;
       keyFile = require('path').resolve(__dirname, '../../' + keyFile);
@@ -103,7 +103,7 @@ module.exports = function (RED) {
     this.sftpConfig = RED.nodes.getNode(this.sftp);
 
     if (this.sftpConfig) {
-      var node = this;
+      const node = this;
       node.on('input', function (msg, send, done) {
         try {
           node.workdir = node.workdir || msg.workdir || './';
@@ -115,7 +115,7 @@ module.exports = function (RED) {
           node.sftpConfig.options.username = msg.user || node.sftpConfig.options.username || '';
           node.sftpConfig.options.password = msg.password || node.sftpConfig.options.password || '';
 
-          var conn = new sftp();
+          let conn = new sftp();
 
           this.sendMsg = function (err, result) {
             if (err) {
@@ -149,18 +149,18 @@ module.exports = function (RED) {
                     done(err);
                     return;
                   }
-                  var ftpfilename = node.workdir + node.filename;
+                  let ftpfilename = node.workdir + node.filename;
 
                   if (msg.payload.filename) ftpfilename = msg.payload.filename;
 
-                  var bufferarray = [];
+                  let bufferarray = [];
 
                   // Be very careful bufferSize too large causes issues with multi threading
-                  var stream = sftp.createReadStream(ftpfilename, { highWaterMark: 1024, bufferSize: 1024 });
+                  let stream = sftp.createReadStream(ftpfilename, { highWaterMark: 1024, bufferSize: 1024 });
 
-                  var counter = 0;
-                  var buf = '';
-                  var byteSize = 65536;
+                  let counter = 0;
+                  let buf = '';
+                  let byteSize = 65536;
 
                   stream
                     .on('data', function (d) {
@@ -186,24 +186,24 @@ module.exports = function (RED) {
                     done(err);
                     return;
                   }
-                  var newFile = '';
+                  let newFile = '';
                   if (msg.payload.filename) {
                     newFile = msg.payload.filename;
                   } else if (node.filename == '') {
-                    var d = new Date();
-                    var guid = d.getTime().toString();
+                    let d = new Date();
+                    let guid = d.getTime().toString();
                     if (node.fileExtension == '') node.fileExtension = '.txt';
                     newFile = node.workdir + guid + node.fileExtension;
                   } else {
                     newFile = node.workdir + node.filename;
                   }
 
-                  var msgData = '';
+                  let msgData = '';
                   if (msg.payload.filedata) msgData = msg.payload.filedata;
                   else msgData = JSON.stringify(msg.payload);
 
                   console.log('SFTP Put:' + newFile);
-                  var writeStream = sftp.createWriteStream(newFile, { flags: 'w' });
+                  let writeStream = sftp.createWriteStream(newFile, { flags: 'w' });
                   // var payloadBuff = new Buffer(msgData);
                   // writeStream.write(payloadBuff, node.sendMsg);
                   writeStream.write(msgData, function (err, result) {
@@ -222,7 +222,7 @@ module.exports = function (RED) {
                     done(err);
                     return;
                   }
-                  var ftpfilename = node.workdir + node.filename;
+                  let ftpfilename = node.workdir + node.filename;
                   if (msg.payload.filename) ftpfilename = msg.payload.filename;
                   console.log('SFTP Deleting File: ' + ftpfilename);
                   sftp.unlink(ftpfilename, function (err) {
@@ -257,6 +257,7 @@ module.exports = function (RED) {
       });
     } else {
       this.error('missing sftp configuration');
+      done(this.error);
     }
   }
   RED.nodes.registerType('sftp in', SFtpInNode);

@@ -1,13 +1,15 @@
 # @yousolution/node-red-contrib-you-ftp-sftp
 
-A Node-RED node to FTP and SFTP Client (fork node-red-contrib-ftp-sftp). Please log issues in the repo for assistance.
+A Node-RED node to FTP and SFTP Client (_fork node-red-contrib-ftp-sftp_).
+**Aggiunge la gestione degli errori FTP/SFTP**
+Please log issues in the repo for assistance.
 (https://github.com/yousolution-cloud/node-red-contrib-you-ftp-sftp.git)
 
 ## Install
 
 Run the following command in the root directory of your Node-RED install
 
-    npm install node-red-contrib-ftp-sftp
+    npm install @yousolution/node-red-contrib-you-ftp-sftp
 
 ## Configuration
 

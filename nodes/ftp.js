@@ -16,14 +16,14 @@
 
 module.exports = function (RED) {
   'use strict';
-  var ftp = require('ftp');
-  var fs = require('fs');
+  // var ftp = require('ftp');
+  // var fs = require('fs');
 
-  const ReadableStream = require('stream');
+  // const ReadableStream = require('stream');
 
   function FtpNode(n) {
     RED.nodes.createNode(this, n);
-    var node = this;
+    // let node = this;
 
     this.options = {
       host: n.host || 'localhost',
@@ -51,7 +51,7 @@ module.exports = function (RED) {
     this.ftpConfig = RED.nodes.getNode(this.ftp);
 
     if (this.ftpConfig) {
-      var node = this;
+      const node = this;
       // console.log("FTP ftpConfig: " + JSON.stringify(this.ftpConfig));
       node.on('input', (msg, send, done) => {
         try {
@@ -65,11 +65,11 @@ module.exports = function (RED) {
           node.ftpConfig.options.password = msg.password || node.ftpConfig.options.password;
           node.ftpConfig.options.pass = msg.pass || msg.password || node.ftpConfig.options.pass;
 
-          var JSFtp = require('jsftp');
+          const JSFtp = require('jsftp');
 
+          const Ftp = new JSFtp(node.ftpConfig.options);
           switch (node.operation) {
             case 'list':
-              var Ftp = new JSFtp(node.ftpConfig.options);
               console.log('FTP List:' + node.workdir.toString());
               Ftp.ls(node.workdir, (err, data) => {
                 // console.log(data);
@@ -78,8 +78,7 @@ module.exports = function (RED) {
               });
               break;
             case 'get':
-              var Ftp = new JSFtp(node.ftpConfig.options);
-              var ftpfilename = node.workdir + node.filename;
+              const ftpfilename = node.workdir + node.filename;
               if (msg.payload.filename) ftpfilename = msg.payload.filename;
               var str = '';
               console.log('FTP Get:' + ftpfilename);
@@ -109,27 +108,27 @@ module.exports = function (RED) {
               });
               break;
             case 'put':
-              var newFile = '';
+              let newFile = '';
               if (msg.payload.filename) {
                 newFile = msg.payload.filename;
               } else if (node.filename == '') {
-                var d = new Date();
-                var guid = d.getTime().toString();
+                let d = new Date();
+                let guid = d.getTime().toString();
                 if (node.fileExtension == '') node.fileExtension = '.txt';
                 newFile = node.workdir + guid + node.fileExtension;
               } else {
                 newFile = node.workdir + node.filename;
               }
 
-              var msgData = '';
+              let msgData = '';
               if (msg.payload.filedata) msgData = msg.payload.filedata;
               else msgData = JSON.stringify(msg.payload);
 
               console.log('FTP Put:' + newFile);
 
-              var Ftp = new JSFtp(node.ftpConfig.options);
+              // let Ftp = new JSFtp(node.ftpConfig.options);
 
-              var buffer = new Buffer(msgData);
+              const buffer = new Buffer(msgData);
 
               Ftp.put(buffer, newFile, (err) => {
                 if (err) {
@@ -144,11 +143,11 @@ module.exports = function (RED) {
               });
               break;
             case 'delete':
-              var delFile = '';
+              let delFile = '';
               if (msg.payload.filename) delFile = msg.payload.filename;
               else delFile = node.workdir + node.filename;
               console.log('FTP Delete:' + delFile);
-              var Ftp = new JSFtp(node.ftpConfig.options);
+              // var Ftp = new JSFtp(node.ftpConfig.options);
               Ftp.raw('dele', delFile, (err, data) => {
                 if (err) {
                   // node.error(err, msg);
