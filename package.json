@@ -1,6 +1,6 @@
 {
   "name": "@yousolution/node-red-contrib-you-ftp-sftp",
-  "version": "1.8.11",
+  "version": "1.9.0",
   "description": "A node-red node that support FTP and SFTP file transfer using $() environment variables to control the ftp connection details",
   "main": "sftp.js",
   "scripts": {
@@ -16,12 +16,14 @@
     "node-red",
     "ftp",
     "sftp",
+    "ftps",
     "redconnect"
   ],
   "node-red": {
     "nodes": {
       "ftp": "nodes/ftp.js",
-      "sftp": "nodes/sftp.js"
+      "sftp": "nodes/sftp.js",
+      "ftps": "nodes/ftps.js"
     }
   },
   "author": "Andrea Trentin [YouSolution]",
@@ -33,7 +35,8 @@
   "dependencies": {
     "ftp": "^0.3.10",
     "jsftp": "git+https://github.com/sergi/jsftp.git",
-    "ssh2-sftp-client": "^1.1.0"
+    "ssh2-sftp-client": "^1.1.0",
+    "basic-ftp": "^5.0.2"
   },
   "devDependencies": {
     "@types/chai": "^4.3.0",
