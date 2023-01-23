@@ -100,7 +100,7 @@ module.exports = function (RED) {
               }
               break;
             case 'get':
-              const ftpfilename = node.workdir + node.filename;
+              let ftpfilename = node.workdir + node.filename;
               if (msg.payload.filename) ftpfilename = msg.payload.filename;
               let str = '';
               console.log('FTP Get:' + ftpfilename);

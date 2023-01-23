@@ -5,10 +5,30 @@ services:
     image: nodered/node-red:2.0.6-12
     # network_mode: host
     extra_hosts:
-      - "api.yousolution.local:192.168.1.100"
+      - 'api.yousolution.local:192.168.1.100'
     volumes:
       - ./data:/data
     ports:
       - '1880:1880'
     environment:
       NODE_ENV: 'dev'
+
+  ftps:
+    image: stilliard/pure-ftpd
+    container_name: ftps
+    ports:
+      - '21:21'
+      - '30000-30009:30000-30009'
+        # volumes:
+        #- "/Users/youruser/ftps/data:/home/foo/"
+        #- "/Users/youruser/ftps/passwd:/etc/pure-ftpd/passwd"
+        #- "/Users/youruser/ftps/ssl:/etc/ssl/private/"
+    environment:
+      PUBLICHOST: '0.0.0.0'
+      FTP_USER_NAME: foo
+      FTP_USER_PASS: pass
+      FTP_USER_HOME: /home/foo
+      ADDED_FLAGS: '--tls=2'
+      TLS_CN: 'localhost'
+      TLS_ORG: 'YourOrg'
+      TLS_C: 'DE'
