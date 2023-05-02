@@ -40,11 +40,22 @@ module.exports = function (RED) {
     RED.nodes.createNode(this, n);
     // var node = this;
 
+    console.log('SFTP - Config - username: ' + n.username);
     console.log('SFTP - Config - hmac: ' + n.hmac);
     console.log('SFTP - Config - cipher: ' + n.cipher);
 
+    // console.log('SFTP - Config - ssh-key: ' + n.sshkey);
+
     let keyFile = null;
     let keyData = null;
+
+    if (n.sshkey) {
+      keyFile = 'keyFile';
+      keyData = n.sshkey;
+      console.log('************************');
+      console.log(keyData);
+      console.log('************************');
+    }
     if (process.env.SFTP_SSH_KEY_FILE) {
       keyFile = process.env.SFTP_SSH_KEY_FILE;
       keyFile = require('path').resolve(__dirname, '../../' + keyFile);
@@ -114,6 +125,10 @@ module.exports = function (RED) {
           node.sftpConfig.options.port = msg.port || node.sftpConfig.options.port;
           node.sftpConfig.options.username = msg.user || node.sftpConfig.options.username || '';
           node.sftpConfig.options.password = msg.password || node.sftpConfig.options.password || '';
+
+          console.log('========');
+          console.log(node.sftpConfig.options.privateKey);
+          console.log('========');
 
           let conn = new sftp();
 
