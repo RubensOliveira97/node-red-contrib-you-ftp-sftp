@@ -35,7 +35,7 @@
   "dependencies": {
     "ftp": "^0.3.10",
     "jsftp": "git+https://github.com/sergi/jsftp.git",
-    "ssh2-sftp-client": "^1.1.0",
+    "ssh2-sftp-client": "^9.0.4",
     "basic-ftp": "^5.0.2"
   },
   "devDependencies": {

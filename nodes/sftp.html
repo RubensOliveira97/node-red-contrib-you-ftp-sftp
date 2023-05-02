@@ -30,6 +30,18 @@
     <input type="password" id="node-config-input-password">
   </div>
   <div class="form-row">
+    <label for="node-config-input-ssh-key-in"><i class="fa fa-lock"></i> SSH-Key file</label>
+    <input type="file" id="node-config-input-ssh-key-in">
+  </div>
+  <div class="form-row">
+    <label for="node-config-input-selected-sshkey"><i class="fa fa-lock"></i> Selected SSH-Key file </label>
+    <input type="checkbox" disabled id="node-config-input-selected-sshkey">
+  </div>
+  <div class="form-row">
+    <!-- <label for="node-config-input-sshkey"><i class="fa fa-lock"></i> SSH-Key</label> -->
+    <textarea id="node-config-input-sshkey" style="display:none;"> </textarea>
+  </div>
+  <div class="form-row">
     <label for="node-config-input-hmac"><i class="fa fa-wrench"></i>hmac</label>
     <select multiple type="text" id="node-config-input-hmac" size="9">
         <option value="hmac-sha2-256">hmac-sha2-256</option>
@@ -69,18 +81,41 @@
 <script type="text/javascript">
   RED.nodes.registerType('sftp', {
     category: 'config',
-    color:"BurlyWood",
+    color: 'BurlyWood',
     defaults: {
       host: { value: 'localhost' },
       port: { value: '22' },
       username: { value: '', required: true },
-      password: { value: '', required: true },
-        hmac: { value: 'hmac-sha2-256,hmac-sha2-512,hmac-sha1', required: true },
-        cipher: { value: 'aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm', required: true }
+      password: { value: '' },
+      sshkey: { value: '' },
+      hmac: { value: 'hmac-sha2-256,hmac-sha2-512,hmac-sha1', required: true },
+      cipher: { value: 'aes128-ctr,aes192-ctr,aes256-ctr,aes128-gcm', required: true },
     },
-    label: function() {
-      return this.host
-    }
+    label: function () {
+      return this.host;
+    },
+    oneditprepare: function () {
+      const sshKeyFileIn = document.getElementById('node-config-input-ssh-key-in');
+      const sshKeyFile = document.getElementById('node-config-input-sshkey');
+
+      if (document.getElementById('node-config-input-sshkey').value) {
+        $('#node-config-input-selected-sshkey').prop('checked', true);
+      }
+
+      // node-config-input-selected-sshkey
+
+      // let fileOutput = document.getElementById("fileOutput");
+      sshKeyFileIn.addEventListener('change', function () {
+        const fileReader = new FileReader();
+        fileReader.onload = function () {
+          // console.log(fileReader.result);
+          sshKeyFile.value = fileReader.result;
+        };
+        // console.log({ type: this.files[0].type });
+        // console.log({ size: this.files[0].size });
+        fileReader.readAsBinaryString(this.files[0]);
+      });
+    },
   });
 </script>
 
@@ -129,23 +164,23 @@
 </script>
 
 <script type="text/x-red" data-help-name="sftp in">
-    <h1>SFTP Client</h1>
-    <p>
-    <b>Node config:</b>
-    process.env.<b>SFTP_SSH_KEY_FILE</b> - If you want to use private SSH key set this environment variable
-    <ul>
-    <li><b>PUT</b> - Set <code>msg.payload.filedata</code> to the file contents you want pushed and will be uploaded to {GUID}.FileExtension. If you need more changes file request to github.</li>
-    <li><b>GET</b> - Set <code>msg.payload.filename</code> to get the file or will use Workdir + Filename in configuration. Leave configuration blank to set in code.</li>
-    <li><b>DELETE</b> - Set <code>msg.payload.filename</code> to delete the file or will use Workdir + Filename in configuration. Leave configuration blank to set in code.</li>
-    <li><b>LIST</b> - Uses the workdir</li>
-    </ul>
-    </p>
+  <h1>SFTP Client</h1>
+  <p>
+  <b>Node config:</b>
+  process.env.<b>SFTP_SSH_KEY_FILE</b> - If you want to use private SSH key set this environment variable
+  <ul>
+  <li><b>PUT</b> - Set <code>msg.payload.filedata</code> to the file contents you want pushed and will be uploaded to {GUID}.FileExtension. If you need more changes file request to github.</li>
+  <li><b>GET</b> - Set <code>msg.payload.filename</code> to get the file or will use Workdir + Filename in configuration. Leave configuration blank to set in code.</li>
+  <li><b>DELETE</b> - Set <code>msg.payload.filename</code> to delete the file or will use Workdir + Filename in configuration. Leave configuration blank to set in code.</li>
+  <li><b>LIST</b> - Uses the workdir</li>
+  </ul>
+  </p>
 </script>
 
 <script type="text/javascript">
   RED.nodes.registerType('sftp in', {
     category: 'storage-input',
-    color:"BurlyWood",
+    color: 'BurlyWood',
     defaults: {
       sftp: { type: 'sftp', required: true },
       operation: { value: 'list', required: true },
@@ -155,11 +190,11 @@
       fileExtension: { value: '.txt' },
       workdir: { value: '' },
       savedir: { value: '' },
-      name: { value: '' }
+      name: { value: '' },
     },
     inputs: 1,
     outputs: 1,
-    icon: "file.png",
+    icon: 'file.png',
     label: function () {
       var sftpNode = RED.nodes.node(this.sftp);
       return this.name || 'sftp';
@@ -168,11 +203,11 @@
       return this.name ? 'node_label_italic' : '';
     },
     oneditprepare: function () {
-      var filename = $(".input-filename-row");
-      var fileContents = $(".input-fileContents-row");
-      var fileExtension = $(".input-fileExtension-row");
-      $("#node-input-operation").change(function () {
-        var id = $("#node-input-operation option:selected").val();
+      var filename = $('.input-filename-row');
+      var fileContents = $('.input-fileContents-row');
+      var fileExtension = $('.input-fileExtension-row');
+      $('#node-input-operation').change(function () {
+        var id = $('#node-input-operation option:selected').val();
         console.log(id);
         if (id == 'list') {
           filename.hide();
@@ -181,10 +216,10 @@
           filename.show();
           fileContents.hide();
           fileExtension.show();
-        } else if (id =='get') {
+        } else if (id == 'get') {
           filename.show();
           fileExtension.hide();
-        } else if (id =='delete') {
+        } else if (id == 'delete') {
           filename.show();
           fileExtension.hide();
         } else {
@@ -192,6 +227,6 @@
           fileExtension.hide();
         }
       });
-    }
+    },
   });
 </script>
