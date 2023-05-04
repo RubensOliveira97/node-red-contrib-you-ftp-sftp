@@ -28,21 +28,21 @@ TODO
 
 // STILL VALIDATING CONNECTIVITY
 //  -- DID validate it works with list/dir
-const fs = require('fs');
+// const fs = require('fs');
 
 module.exports = function (RED) {
   'use strict';
 
-  const sftp = require('ssh2').Client;
+  // const sftp = require('ssh2').Client;
   const fs = require('fs');
 
   function SFtpNode(n) {
     RED.nodes.createNode(this, n);
     // var node = this;
 
-    console.log('SFTP - Config - username: ' + n.username);
-    console.log('SFTP - Config - hmac: ' + n.hmac);
-    console.log('SFTP - Config - cipher: ' + n.cipher);
+    // console.log('SFTP - Config - username: ' + n.username);
+    // console.log('SFTP - Config - hmac: ' + n.hmac);
+    // console.log('SFTP - Config - cipher: ' + n.cipher);
 
     // console.log('SFTP - Config - ssh-key: ' + n.sshkey);
 
@@ -52,9 +52,6 @@ module.exports = function (RED) {
     if (n.sshkey) {
       keyFile = 'keyFile';
       keyData = n.sshkey;
-      console.log('************************');
-      console.log(keyData);
-      console.log('************************');
     }
     if (process.env.SFTP_SSH_KEY_FILE) {
       keyFile = process.env.SFTP_SSH_KEY_FILE;
@@ -71,7 +68,11 @@ module.exports = function (RED) {
     }
 
     if (keyFile && keyData) {
-      console.log('SFTP - Using privateKey: ' + keyFile + ' Length: ' + keyData.toString().length);
+      console.log('SFTP - Using key file');
+      // console.log('*******************');
+      // console.log('SFTP - Username: ' + n.username);
+      // console.log('SFTP - Using privateKey: ' + keyFile + ' Length: ' + keyData.toString().length);
+      // console.log('*******************');
       this.options = {
         host: n.host || 'localhost',
         port: n.port || 21,
@@ -79,24 +80,139 @@ module.exports = function (RED) {
         password: n.password,
         privateKey: keyData,
         algorithms: {
-          // hmac: ['hmac-sha2-256', 'hmac-sha2-512', 'hmac-sha1', 'hmac-sha1-96'],
-          // cipher: ['aes256-cbc']
-          hmac: n.hmac,
-          cipher: n.cipher,
+          kex: [
+            'curve25519-sha256',
+            'curve25519-sha256@libssh.org',
+            'ecdh-sha2-nistp256',
+            'ecdh-sha2-nistp384',
+            'ecdh-sha2-nistp521',
+            'diffie-hellman-group-exchange-sha256',
+            'diffie-hellman-group14-sha256',
+            'diffie-hellman-group15-sha512',
+            'diffie-hellman-group16-sha512',
+            'diffie-hellman-group17-sha512',
+            'diffie-hellman-group18-sha512',
+            'diffie-hellman-group-exchange-sha1',
+            'diffie-hellman-group14-sha1',
+            'diffie-hellman-group1-sha1',
+          ],
+          cipher: [
+            'chacha20-poly1305@openssh.com',
+            'aes128-gcm',
+            'aes128-gcm@openssh.com',
+            'aes256-gcm',
+            'aes256-gcm@openssh.com',
+            'aes128-ctr',
+            'aes192-ctr',
+            'aes256-ctr',
+            '3des-cbc',
+            'aes256-cbc',
+            'aes192-cbc',
+            'aes128-cbc',
+            // 'arcfour256',
+            // 'arcfour128',
+            // 'arcfour',
+            // 'blowfish-cbc',
+            // 'ast128-cbc',
+          ],
+          serverHostKey: [
+            'ssh-ed25519',
+            'ecdsa-sha2-nistp256',
+            'ecdsa-sha2-nistp384',
+            'ecdsa-sha2-nistp521',
+            'rsa-sha2-512',
+            'rsa-sha2-256',
+            'ssh-rsa',
+            'ssh-dss',
+          ],
+          hmac: [
+            'hmac-sha2-256-etm@openssh.com',
+            'hmac-sha2-512-etm@openssh.com',
+            'hmac-sha1-etm@openssh.com',
+            'hmac-sha2-256',
+            'hmac-sha2-512',
+            'hmac-sha1',
+            'hmac-md5',
+            'hmac-sha2-256-96',
+            'hmac-sha2-512-96',
+            // 'hmac-ripemd160',
+            // 'hmac-sha1-96',
+            // 'hmac-md5-96',
+          ],
         },
       };
     } else {
+      // console.log('*******************');
       console.log('SFTP - Using User/Pwd');
+      // console.log('SFTP - Username: ' + n.username);
+      // console.log('SFTP - Password: ' + n.password);
+      // console.log('SFTP - Using privateKey: ' + keyFile + ' Length: ' + keyData?.toString().length);
+      // console.log('*******************');
       this.options = {
         host: n.host || 'localhost',
         port: n.port || 21,
         username: n.username,
         password: n.password,
         algorithms: {
-          // hmac: ['hmac-sha2-256', 'hmac-sha2-512', 'hmac-sha1', 'hmac-sha1-96'],
-          // cipher: ['aes256-cbc']
-          hmac: n.hmac,
-          cipher: n.cipher,
+          kex: [
+            'curve25519-sha256',
+            'curve25519-sha256@libssh.org',
+            'ecdh-sha2-nistp256',
+            'ecdh-sha2-nistp384',
+            'ecdh-sha2-nistp521',
+            'diffie-hellman-group-exchange-sha256',
+            'diffie-hellman-group14-sha256',
+            'diffie-hellman-group15-sha512',
+            'diffie-hellman-group16-sha512',
+            'diffie-hellman-group17-sha512',
+            'diffie-hellman-group18-sha512',
+            'diffie-hellman-group-exchange-sha1',
+            'diffie-hellman-group14-sha1',
+            'diffie-hellman-group1-sha1',
+          ],
+          cipher: [
+            'chacha20-poly1305@openssh.com',
+            'aes128-gcm',
+            'aes128-gcm@openssh.com',
+            'aes256-gcm',
+            'aes256-gcm@openssh.com',
+            'aes128-ctr',
+            'aes192-ctr',
+            'aes256-ctr',
+            '3des-cbc',
+            'aes256-cbc',
+            'aes192-cbc',
+            'aes128-cbc',
+            // 'arcfour256',
+            // 'arcfour128',
+            // 'arcfour',
+            // 'blowfish-cbc',
+            // 'ast128-cbc',
+          ],
+          serverHostKey: [
+            'ssh-ed25519',
+            'ecdsa-sha2-nistp256',
+            'ecdsa-sha2-nistp384',
+            'ecdsa-sha2-nistp521',
+            'rsa-sha2-512',
+            'rsa-sha2-256',
+            'ssh-rsa',
+            'ssh-dss',
+          ],
+          hmac: [
+            'hmac-sha2-256-etm@openssh.com',
+            'hmac-sha2-512-etm@openssh.com',
+            'hmac-sha1-etm@openssh.com',
+            'hmac-sha2-256',
+            'hmac-sha2-512',
+            'hmac-sha1',
+            'hmac-md5',
+            'hmac-sha2-256-96',
+            'hmac-sha2-512-96',
+            // 'hmac-ripemd160',
+            // 'hmac-sha1-96',
+            // 'hmac-md5-96',
+          ],
         },
       };
     }
@@ -115,7 +231,7 @@ module.exports = function (RED) {
 
     if (this.sftpConfig) {
       const node = this;
-      node.on('input', function (msg, send, done) {
+      node.on('input', async function (msg, send, done) {
         try {
           node.workdir = node.workdir || msg.workdir || './';
           node.fileExtension = node.fileExtension || msg.fileExtension || '';
@@ -126,144 +242,111 @@ module.exports = function (RED) {
           node.sftpConfig.options.username = msg.user || node.sftpConfig.options.username || '';
           node.sftpConfig.options.password = msg.password || node.sftpConfig.options.password || '';
 
-          console.log('========');
-          console.log(node.sftpConfig.options.privateKey);
-          console.log('========');
+          // console.log('========');
+          // console.log(node.sftpConfig.options.privateKey);
+          // console.log('========');
 
-          let conn = new sftp();
+          // let conn = new sftp();
 
-          this.sendMsg = function (err, result) {
-            if (err) {
-              // node.error(err.toString(), msg);
-              node.status({ fill: 'red', shape: 'ring', text: 'failed' });
-              done(err);
-              return;
-            }
-            node.status({});
-            conn.end();
-            msg.payload = result;
-            node.send(msg);
-          };
-
-          conn.on('ready', function () {
-            switch (node.operation) {
-              case 'list':
-                conn.sftp(function (err, sftp) {
-                  if (err) {
-                    // node.error(err, msg);
-                    done(err);
-                    return;
-                  }
-                  sftp.readdir(node.workdir, node.sendMsg);
-                });
-                break;
-              case 'get':
-                conn.sftp(function (err, sftp) {
-                  if (err) {
-                    // node.error(err, msg);
-                    done(err);
-                    return;
-                  }
-                  let ftpfilename = node.workdir + node.filename;
-
-                  if (msg.payload.filename) ftpfilename = msg.payload.filename;
-
-                  let bufferarray = [];
-
-                  // Be very careful bufferSize too large causes issues with multi threading
-                  let stream = sftp.createReadStream(ftpfilename, { highWaterMark: 1024, bufferSize: 1024 });
-
-                  let counter = 0;
-                  let buf = '';
-                  let byteSize = 65536;
-
-                  stream
-                    .on('data', function (d) {
-                      buf += d;
-                      counter++;
-                      // console.log("Read Chunk ("+ counter + "): " + d.length + " Length: " + buf.length);
-                    })
-                    .on('end', function () {
-                      node.status({});
-                      conn.end();
-                      console.log('SFTP Read Chunks ' + counter + ' Length: ' + buf.length);
-                      msg.payload = {};
-                      msg.payload.filedata = buf;
-                      msg.payload.filename = ftpfilename;
-                      node.send(msg);
-                    });
-                });
-                break;
-              case 'put':
-                conn.sftp(function (err, sftp) {
-                  if (err) {
-                    // node.error(err, msg);
-                    done(err);
-                    return;
-                  }
-                  let newFile = '';
-                  if (msg.payload.filename) {
-                    newFile = msg.payload.filename;
-                  } else if (node.filename == '') {
-                    let d = new Date();
-                    let guid = d.getTime().toString();
-                    if (node.fileExtension == '') node.fileExtension = '.txt';
-                    newFile = node.workdir + guid + node.fileExtension;
-                  } else {
-                    newFile = node.workdir + node.filename;
-                  }
-
-                  let msgData = '';
-                  if (msg.payload.filedata) msgData = msg.payload.filedata;
-                  else msgData = JSON.stringify(msg.payload);
-
-                  console.log('SFTP Put:' + newFile);
-                  let writeStream = sftp.createWriteStream(newFile, { flags: 'w' });
-                  // var payloadBuff = new Buffer(msgData);
-                  // writeStream.write(payloadBuff, node.sendMsg);
-                  writeStream.write(msgData, function (err, result) {
-                    node.status({});
-                    conn.end();
-                    msg.payload = {};
-                    msg.payload.filename = newFile;
-                    node.send(msg);
-                  });
-                });
-                break;
-              case 'delete':
-                conn.sftp(function (err, sftp) {
-                  if (err) {
-                    // node.error(err, msg);
-                    done(err);
-                    return;
-                  }
-                  let ftpfilename = node.workdir + node.filename;
-                  if (msg.payload.filename) ftpfilename = msg.payload.filename;
-                  console.log('SFTP Deleting File: ' + ftpfilename);
-                  sftp.unlink(ftpfilename, function (err) {
-                    if (err) {
-                      // node.error(err, msg);
-                      done(err);
-                      return;
-                    } else {
-                      console.log('SFTP file unlinked');
-                      node.status({});
-                      msg.payload = {};
-                      msg.payload.filename = ftpfilename;
-                      node.send(msg);
-                    }
-                    conn.end();
-                  });
-                });
-                break;
-            }
-          });
-          conn.on('error', function (error) {
-            // node.error(error, msg);
-            done(error);
+          // conn.on('ready', async function () {
+          const Client = require('ssh2-sftp-client');
+          const client = new Client();
+          try {
+            node.status({ fill: 'gray', shape: 'ring', text: 'connection...' });
+            await client.connect(node.sftpConfig.options);
+            node.status({ fill: 'green', shape: 'ring', text: 'connected' });
+          } catch (err) {
+            node.status({ fill: 'red', shape: 'ring', text: 'connection failed.' });
+            done(err);
+            console.error(err.message);
             return;
-          });
-          conn.connect(node.sftpConfig.options);
+          }
+
+          switch (node.operation) {
+            case 'list':
+              try {
+                const result = await client.list(node.workdir);
+                node.status({ fill: 'green', shape: 'dot', text: 'list done' });
+                await client.end();
+                msg.payload = {};
+                msg.payload = result;
+                node.send(msg);
+              } catch (err) {
+                node.status({ fill: 'red', shape: 'ring', text: 'list failed' });
+                done(err);
+                console.error(err.message);
+              }
+              break;
+
+            case 'get':
+              try {
+                let ftpfilename = node.workdir + node.filename;
+                if (msg.payload.filename) ftpfilename = msg.payload.filename;
+
+                const result = await client.get(ftpfilename);
+                await client.end();
+                node.status({ fill: 'green', shape: 'dot', text: 'get done' });
+                // conn.end();
+                // console.log('SFTP Read Chunks ' + counter + ' Length: ' + buf.length);
+                msg.payload = {};
+                msg.payload.filedata = result;
+                msg.payload.filename = ftpfilename;
+                node.send(msg);
+              } catch (err) {
+                node.status({ fill: 'red', shape: 'ring', text: 'get failed' });
+                done(err);
+                console.error(err.message);
+              }
+              break;
+            case 'put':
+              let newFile = '';
+              if (msg.payload.filename) {
+                newFile = msg.payload.filename;
+              } else if (node.filename == '') {
+                let d = new Date();
+                let guid = d.getTime().toString();
+                if (node.fileExtension == '') node.fileExtension = '.txt';
+                newFile = node.workdir + guid + node.fileExtension;
+              } else {
+                newFile = node.workdir + node.filename;
+              }
+
+              let msgData = '';
+              msgData = msg.payload.filedata ? msg.payload.filedata : JSON.stringify(msg.payload);
+              // console.log(newFile);
+              node.status({});
+              try {
+                await client.put(msgData, newFile);
+                node.status({ fill: 'green', shape: 'dot', text: 'put done' });
+                await client.end();
+                msg.payload = {};
+                msg.payload.filename = newFile;
+                node.send(msg);
+              } catch (err) {
+                node.status({ fill: 'red', shape: 'ring', text: 'put failed' });
+                done(err);
+                console.error(err.message);
+              }
+              break;
+
+            case 'delete':
+              try {
+                let ftpfilename = node.workdir + node.filename;
+                if (msg.payload.filename) ftpfilename = msg.payload.filename;
+                console.log('SFTP Deleting File: ' + ftpfilename);
+                await client.delete(ftpfilename);
+                node.status({ fill: 'green', shape: 'dot', text: 'delete done' });
+                await client.end();
+                msg.payload = {};
+                msg.payload.filename = ftpfilename;
+                node.send(msg);
+              } catch (err) {
+                node.status({ fill: 'red', shape: 'ring', text: 'delete failed' });
+                done(err);
+                console.error(err.message);
+              }
+              break;
+          }
         } catch (error) {
           // node.error(error, msg);
           done(error);
