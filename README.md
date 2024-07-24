@@ -23,6 +23,8 @@ PUT - Set msg.payload.filedata to the file contents you want pushed and will be 
 
 GET - Set msg.payload.filename to get the file or will use Workdir + Filename in configuration. Leave configuration blank to set in code.
 
+RENAME - Set msg.payload.filename and msg.payload.newfilename Leave configuration blank to set in code.
+
 DELETE - Set msg.payload.filename to delete the file or will use Workdir + Filename in configuration. Leave configuration blank to set in code.
 
 LIST - Uses the workdir
