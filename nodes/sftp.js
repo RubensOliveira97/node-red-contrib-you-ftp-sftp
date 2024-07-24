@@ -330,6 +330,8 @@ module.exports = function (RED) {
               break;
             case 'rename':
               try{
+                let ftpfilename = node.workdir + node.filename;
+                let ftpnewfilename = node.workdir + node.newfilename;
                 if (msg.payload.filename) ftpfilename = msg.payload.filename;
                 if (msg.payload.newfilename) ftpnewfilename = msg.payload.newfilename;
                 console.log('SFTP Renaming File: ' + ftpfilename + ' to ' + ftpnewfilename);

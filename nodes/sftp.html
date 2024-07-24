@@ -130,6 +130,7 @@
       <option value="list">list</option>
       <option value="get">get</option>
       <option value="put">put</option>
+      <option value="rename">rename</option>
       <option value="delete">delete</option>
     </select>
   </div>
@@ -209,8 +210,11 @@
     },
     oneditprepare: function () {
       var filename = $('.input-filename-row');
+      var newfilename = $('.input-newfilename-row');
       var fileContents = $('.input-fileContents-row');
       var fileExtension = $('.input-fileExtension-row');
+      var savedir = $('.input-savedir-row');
+      var localFilename = $('.input-localFilename-row');
       $('#node-input-operation').change(function () {
         var id = $('#node-input-operation option:selected').val();
         console.log(id);
@@ -224,6 +228,10 @@
         }  else if (id == 'rename') {
           filename.show();
           newfilename.show();
+          fileContents.hide();
+          fileExtension.hide();
+          savedir.hide();
+          localFilename.hide();
         } else if (id == 'get') {
           filename.show();
           fileExtension.hide();
