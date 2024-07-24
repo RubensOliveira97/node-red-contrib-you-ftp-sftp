@@ -1,4 +1,4 @@
-# @yousolution/node-red-contrib-you-ftp-sftp
+# @elevateit/node-red-contrib-elevate-ftp-sftp
 
 A Node-RED node to FTP and SFTP Client (_fork node-red-contrib-ftp-sftp_).
 
